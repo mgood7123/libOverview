@@ -4,10 +4,12 @@ import android.graphics.Color;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static android.view.View.inflate;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends RecyclerView.Adapter<Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid.ViewHolder> {
@@ -26,52 +28,55 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        FrameLayout frameLayout;
-        FrameLayout contentFrame;
-        ImageView content;
+        FrameLayout application;
+        ImageView applicationIcon;
+        TextView applicationLabel;
+        FrameLayout applicationContentBackground;
+        ImageView applicationContent;
 
         public ViewHolder(FrameLayout itemView) {
             super(itemView);
-            frameLayout = itemView;
-            contentFrame = new FrameLayout(overview.mContext);
-            content = new ImageView(overview.mContext);
+            application = itemView;
+            applicationIcon = itemView.findViewById(R.id.applicationIcon);
+            applicationLabel = itemView.findViewById(R.id.applicationLabel);
+            applicationContentBackground = itemView.findViewById(R.id.applicationContentBackground);
+            applicationContent = itemView.findViewById(R.id.applicationContent);
 
-            content.setBackgroundColor(Color.BLACK);
-            frameLayout.addView(contentFrame, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-            contentFrame.addView(content, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            applicationIcon.setImageResource(android.R.drawable.sym_def_app_icon);
+            applicationContent.setBackgroundColor(Color.BLACK);
         }
 
         public void adjustHeightByRowCount() {
             float containerHeight = overview.getHeight();
             ViewGroup.LayoutParams p = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
             p.height = Math.round(containerHeight/overview.rowCount);
-            frameLayout.setLayoutParams(p);
+            application.setLayoutParams(p);
         }
 
         public void adjustForPadding() {
-            contentFrame.setPadding(global_padding, global_padding, global_padding, global_padding);
+            application.setPadding(global_padding, global_padding, global_padding, global_padding);
         }
 
         public void setItem(int position) {
             // add item if we can
             if (position < overview.Items.size()) {
-                content.setImageBitmap(overview.Items.get(position));
+                applicationContent.setImageBitmap(overview.Items.get(position));
             }
         }
 
         public void setOnClickListener() {
             if (overview.onClickListener != null) {
-                frameLayout.setOnClickListener(overview.onClickListener);
+                application.setOnClickListener(overview.onClickListener);
             } else {
-                frameLayout.setOnClickListener(null);
-                frameLayout.setClickable(false);
+                application.setOnClickListener(null);
+                application.setClickable(false);
             }
         }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(new FrameLayout(overview.mContext));
+        return new ViewHolder((FrameLayout) inflate(overview.mContext, R.layout.overview_layout_samsung_goodlock_taskchanger_grid, null));
     }
 
     // Involves populating data into the item through holder
