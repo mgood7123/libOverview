@@ -1,11 +1,14 @@
 package smallville7123.liboverview;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +16,7 @@ import static android.view.View.inflate;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends RecyclerView.Adapter<Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid.ViewHolder> {
+    private static final String TAG = "Overview_Adapter_Samsun";
     public GridLayoutManager manager;
     Overview overview;
     int global_padding = 75;
@@ -33,6 +37,7 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
         TextView applicationLabel;
         FrameLayout applicationContentBackground;
         ImageView applicationContent;
+        Bitmap applicationContentBitmap;
 
         public ViewHolder(FrameLayout itemView) {
             super(itemView);
@@ -59,8 +64,19 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
 
         public void setItem(int position) {
             // add item if we can
-            if (position < overview.Items.size()) {
-                applicationContent.setImageBitmap(overview.Items.get(position));
+            if (position < overview.data.size()) {
+                applicationIcon.setVisibility(View.VISIBLE);
+                applicationLabel.setVisibility(View.VISIBLE);
+                applicationContent.setVisibility(View.VISIBLE);
+                Overview.DataSet dataSet = overview.data.get(position);
+                applicationIcon.setImageDrawable(dataSet.icon);
+                applicationLabel.setText(dataSet.title);
+                applicationContentBitmap = dataSet.content;
+                applicationContent.setImageBitmap(applicationContentBitmap);
+            } else {
+                applicationIcon.setVisibility(View.INVISIBLE);
+                applicationLabel.setVisibility(View.INVISIBLE);
+                applicationContent.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -72,6 +88,13 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
                 application.setClickable(false);
             }
         }
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        if (holder.applicationContentBitmap != null) holder.applicationContentBitmap.recycle();
+        holder.applicationContent.setImageBitmap(null);
+        super.onViewRecycled(holder);
     }
 
     @Override
@@ -91,7 +114,7 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
     @Override
     public int getItemCount() {
         // ensure there is at least rowCount items
-        int itemSize = overview.Items.size();
+        int itemSize = overview.data.size();
         return itemSize + (itemSize % overview.columnCount);
     }
 }

@@ -2,12 +2,14 @@ package smallville7123.liboverview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 public class Overview extends RecyclerView {
     private static final String TAG = "Overview";
@@ -23,8 +25,7 @@ public class Overview extends RecyclerView {
     OnClickListener onClickListener;
     int rowCount = 2;
     int columnCount = 2;
-    BitmapVector Items = new BitmapVector();
-
+    ArrayList<DataSet> data = new ArrayList<>();
 
     public Overview(@NonNull Context context) {
         super(context);
@@ -63,15 +64,26 @@ public class Overview extends RecyclerView {
         adapter.manager.setSpanCount(count);
     }
 
-    public void addItem(Bitmap item) {
-        Log.d(TAG, "addItem() called with: item = [" + item + "]");
-        Items.add(item);
+    public static class DataSet {
+        Drawable icon;
+        CharSequence title;
+        Bitmap content;
+
+        public DataSet(Drawable icon, CharSequence title, Bitmap content) {
+            this.icon = icon;
+            this.title = title;
+            this.content = content;
+        }
+    }
+
+    public void addItem(Drawable icon, CharSequence title, Bitmap content) {
+        data.add(new DataSet(icon, title, content));
         if (adapter != null) adapter.notifyDataSetChanged();
     }
 
     public void clear() {
         // remove all items from this RecycleView so they can be garbage collected if needed
-        Items.recycleAndRemoveAllElements();
+        data.clear();
         if (adapter != null) adapter.notifyDataSetChanged();
     }
 }
