@@ -50,6 +50,7 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         FrameLayout application;
+        FrameLayout applicationFrame;
         ImageView applicationIcon;
         TextView applicationLabel;
         FrameLayout applicationContentBackground;
@@ -60,6 +61,7 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
         public ViewHolder(FrameLayout itemView) {
             super(itemView);
             application = itemView;
+            applicationFrame = itemView.findViewById(R.id.applicationFrame);
             applicationIcon = itemView.findViewById(R.id.applicationIcon);
             applicationLabel = itemView.findViewById(R.id.applicationLabel);
             applicationContentBackground = itemView.findViewById(R.id.applicationContentBackground);
@@ -81,32 +83,39 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
         }
 
         public void setItem(int position) {
-            // add item if we can
-            if (position < overview.data.size()) {
-                applicationIcon.setVisibility(View.VISIBLE);
-                applicationLabel.setVisibility(View.VISIBLE);
-                applicationContent.setVisibility(View.VISIBLE);
+            applicationIcon.setVisibility(View.VISIBLE);
+            applicationLabel.setVisibility(View.VISIBLE);
+            applicationContent.setVisibility(View.VISIBLE);
 
-                Overview.DataSet dataSet = overview.data.get(position);
-                additionalData = dataSet.additionalData;
+            Overview.DataSet dataSet = overview.data.get(position);
+            additionalData = dataSet.additionalData;
 
-                applicationIcon.setImageDrawable(dataSet.icon);
-                applicationLabel.setText(dataSet.title);
-                applicationContentBitmap = dataSet.content;
-                applicationContent.setImageBitmap(applicationContentBitmap);
-            } else {
-                applicationIcon.setVisibility(View.INVISIBLE);
-                applicationLabel.setVisibility(View.INVISIBLE);
-                applicationContent.setVisibility(View.INVISIBLE);
-            }
+            applicationIcon.setImageDrawable(dataSet.icon);
+            applicationLabel.setText(dataSet.title);
+            applicationContentBitmap = dataSet.content;
+            applicationContent.setImageBitmap(applicationContentBitmap);
+        }
+
+        public void setEmptyItem() {
+            applicationIcon.setVisibility(View.INVISIBLE);
+            applicationLabel.setVisibility(View.INVISIBLE);
+            applicationContent.setVisibility(View.INVISIBLE);
         }
 
         public void setOnClickListener() {
+            if (overview.onItemClickListener != null && additionalData != null) {
+                applicationFrame.setOnClickListener(v -> {
+                    if (overview.onClickListener != null) {
+                        overview.onClickListener.onClick(v);
+                    }
+                    overview.onItemClickListener.onClick(additionalData);
+                });
+            }
+        }
+
+        public void setEmptyOnClickListener() {
             if (overview.onClickListener != null) {
                 application.setOnClickListener(v -> {
-                    if (overview.onItemClickListener != null) {
-                        overview.onItemClickListener.onClick(additionalData);
-                    }
                     overview.onClickListener.onClick(v);
                 });
             } else {
@@ -133,8 +142,13 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.adjustHeightByRowCount();
         holder.adjustForPadding();
-        holder.setItem(position);
-        holder.setOnClickListener();
+        holder.setEmptyOnClickListener();
+        if (position < overview.data.size()) {
+            holder.setItem(position);
+            holder.setOnClickListener();
+        } else {
+            holder.setEmptyItem();
+        }
     }
 
     @Override
