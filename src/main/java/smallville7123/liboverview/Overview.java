@@ -23,7 +23,6 @@ public class Overview extends RecyclerView {
 
     public void setOnItemClick(ItemClickListener listener) {
         onItemClickListener = listener;
-
     }
 
     public static class Types {
