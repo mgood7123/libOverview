@@ -155,6 +155,6 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
     public int getItemCount() {
         // ensure there is at least rowCount items
         int itemSize = overview.data.size();
-        return itemSize + (itemSize % overview.columnCount);
+        return Math.max(overview.columnCount*overview.rowCount, itemSize + (itemSize % overview.columnCount));
     }
 }
