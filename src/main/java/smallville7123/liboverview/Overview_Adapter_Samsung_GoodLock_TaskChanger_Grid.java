@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static android.view.View.inflate;
@@ -26,7 +27,23 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
     }
 
     public void setManager(Overview overview) {
-        manager = new GridLayoutManager(overview.mContext, 1);
+        manager = new GridLayoutManager(
+            overview.mContext,            // context
+            1,                            // spanCount (column count)
+            LinearLayoutManager.VERTICAL, // orientation
+        // if reverse layout is true, items stick to bottom instead of top
+        // eg normal: row 1 is top, row 2 is bottom
+        // reversed: row 1 is bottom, row 2 is top
+            true                          // reverseLayout
+        ) {
+            @Override
+            protected boolean isLayoutRTL() {
+                // same as above but for columns
+                // normal: column 1 is left, column 2 is right
+                // RTL:    column 2 is left, column 1 is right
+                return true;
+            }
+        };
         overview.setLayoutManager(manager);
     }
 
