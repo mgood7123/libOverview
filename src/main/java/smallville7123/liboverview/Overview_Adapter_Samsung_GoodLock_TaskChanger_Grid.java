@@ -38,6 +38,7 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
         FrameLayout applicationContentBackground;
         ImageView applicationContent;
         Bitmap applicationContentBitmap;
+        Object additionalData;
 
         public ViewHolder(FrameLayout itemView) {
             super(itemView);
@@ -68,7 +69,10 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
                 applicationIcon.setVisibility(View.VISIBLE);
                 applicationLabel.setVisibility(View.VISIBLE);
                 applicationContent.setVisibility(View.VISIBLE);
+
                 Overview.DataSet dataSet = overview.data.get(position);
+                additionalData = dataSet.additionalData;
+
                 applicationIcon.setImageDrawable(dataSet.icon);
                 applicationLabel.setText(dataSet.title);
                 applicationContentBitmap = dataSet.content;
@@ -82,7 +86,12 @@ public class Overview_Adapter_Samsung_GoodLock_TaskChanger_Grid extends Recycler
 
         public void setOnClickListener() {
             if (overview.onClickListener != null) {
-                application.setOnClickListener(overview.onClickListener);
+                application.setOnClickListener(v -> {
+                    if (overview.onItemClickListener != null) {
+                        overview.onItemClickListener.onClick(additionalData);
+                    }
+                    overview.onClickListener.onClick(v);
+                });
             } else {
                 application.setOnClickListener(null);
                 application.setClickable(false);

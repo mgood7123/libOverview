@@ -14,6 +14,18 @@ import java.util.ArrayList;
 public class Overview extends RecyclerView {
     private static final String TAG = "Overview";
     public int type = Types.Samsung_GoodLock_TaskChanger_Grid;
+
+    ItemClickListener onItemClickListener;
+
+    public interface ItemClickListener {
+        void onClick(Object data);
+    }
+
+    public void setOnItemClick(ItemClickListener listener) {
+        onItemClickListener = listener;
+
+    }
+
     public static class Types {
         static int Samsung_GoodLock_TaskChanger_Grid = 0;
         static int AndroidPie = 1;
@@ -68,16 +80,22 @@ public class Overview extends RecyclerView {
         Drawable icon;
         CharSequence title;
         Bitmap content;
+        Object additionalData;
 
-        public DataSet(Drawable icon, CharSequence title, Bitmap content) {
+        public DataSet(Drawable icon, CharSequence title, Bitmap content, Object additionalData) {
             this.icon = icon;
             this.title = title;
             this.content = content;
+            this.additionalData = additionalData;
         }
     }
 
     public void addItem(Drawable icon, CharSequence title, Bitmap content) {
-        data.add(new DataSet(icon, title, content));
+        addItem(icon, title, content, null);
+    }
+
+    public void addItem(Drawable icon, CharSequence title, Bitmap content, Object additionalData) {
+        data.add(new DataSet(icon, title, content, additionalData));
         if (adapter != null) adapter.notifyDataSetChanged();
     }
 
